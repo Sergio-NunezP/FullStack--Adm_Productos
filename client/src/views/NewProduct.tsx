@@ -1,7 +1,8 @@
-import { Link, Form, useActionData } from "react-router-dom";
+import { Link, Form, useActionData, ActionFunctionArgs } from "react-router-dom";
+import ErrorMessage from "../components/ErrorMessage";
 
 // Recuperar los datos ingresado en el formulario
-export async function action({ request }) {
+export async function action({ request }: ActionFunctionArgs) {
     const data = Object.fromEntries(await request.formData())
 
     let error = ''
@@ -20,8 +21,7 @@ export async function action({ request }) {
 export default function NewProduct() {
 
     // Hook para pasar el error de una función a otra
-    const error = useActionData()
-    console.log(error)
+    const error = useActionData() as string
 
     return (
         <>
@@ -37,6 +37,7 @@ export default function NewProduct() {
                 </Link>
             </div>
 
+            {error && <ErrorMessage>{error}</ErrorMessage>}
             <Form
                 className="mt-10"
                 method="POST"
