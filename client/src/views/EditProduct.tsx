@@ -1,6 +1,6 @@
 import { Link, Form, useActionData, ActionFunctionArgs, redirect, LoaderFunctionArgs, useLoaderData } from "react-router-dom";
 import ErrorMessage from "../components/ErrorMessage";
-import { addProduct, getProductsById } from "../services/ProductService";
+import { addProduct, getProductsById, updateProduct } from "../services/ProductService";
 import { Product } from "../types";
 
 export async function loader({ params }: LoaderFunctionArgs) {
@@ -14,7 +14,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 }
 
 // Recuperar los datos ingresado en el formulario
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request, params }: ActionFunctionArgs) {
     const data = Object.fromEntries(await request.formData())
 
     let error = ''
@@ -27,10 +27,11 @@ export async function action({ request }: ActionFunctionArgs) {
         return error
     }
 
-    await addProduct(data)
-
-    // Redireccionar despues de insertar un producto
-    return redirect('/')
+    if (params.id !== undefined) {
+        await updateProduct(data, +params.id)
+        // Redireccionar despues de insertar un producto
+        return redirect('/')
+    }
 }
 
 // Editar Producto
