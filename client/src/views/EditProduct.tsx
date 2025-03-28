@@ -1,9 +1,16 @@
-import { Link, Form, useActionData, ActionFunctionArgs, redirect, LoaderFunctionArgs } from "react-router-dom";
+import { Link, Form, useActionData, ActionFunctionArgs, redirect, LoaderFunctionArgs, useLoaderData } from "react-router-dom";
 import ErrorMessage from "../components/ErrorMessage";
-import { addProduct } from "../services/ProductService";
+import { addProduct, getProductsById } from "../services/ProductService";
+import { Product } from "../types";
 
 export async function loader({ params }: LoaderFunctionArgs) {
-    console.log(params.id)
+    if (params.id !== undefined) {
+        const product = await getProductsById(+params.id)
+        if (!product) {
+            return redirect('/')
+        }
+        return product
+    }
 }
 
 // Recuperar los datos ingresado en el formulario
@@ -26,7 +33,10 @@ export async function action({ request }: ActionFunctionArgs) {
     return redirect('/')
 }
 
+// Editar Producto
 export default function EditProduct() {
+
+    const product = useLoaderData() as Product
 
     // Hook para pasar el error de una función a otra
     const error = useActionData() as string
@@ -62,6 +72,7 @@ export default function EditProduct() {
                         className="mt-2 block w-full p-3 bg-gray-50"
                         placeholder="Nombre del Producto"
                         name="name"
+                        defaultValue={product.name}
                     />
                 </div>
                 <div className="mb-4">
@@ -75,6 +86,7 @@ export default function EditProduct() {
                         className="mt-2 block w-full p-3 bg-gray-50"
                         placeholder="Precio Producto. ej. 200, 300"
                         name="price"
+                        defaultValue={product.price}
                     />
                 </div>
                 <input
