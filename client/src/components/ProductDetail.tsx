@@ -1,9 +1,14 @@
-import { useNavigate } from "react-router-dom"
+import { ActionFunctionArgs, Form, useNavigate, redirect } from "react-router-dom"
 import { Product } from "../types"
 import { formatCurrency } from "../utils"
 
 type ProductDetailProps = {
     product: Product
+}
+
+export async function action({ params }: ActionFunctionArgs) {
+    console.log(params.id)
+    return redirect('/')
 }
 
 export default function ProductDetail({ product }: ProductDetailProps) {
@@ -29,6 +34,18 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                         className="bg-indigo-600 text-white rounded-lg p-2 w-full uppercase font-bold text-xs text-center"
                     >Editar
                     </button>
+
+                    <Form
+                        className="w-full"
+                        method="POST"
+                        action={`productos/${product.id}/eliminar`}
+                    >
+                        <input
+                            type='submit'
+                            value='Eliminar'
+                            className="bg-red-600 text-white rounded-lg p-2 w-full uppercase font-bold text-xs text-center"
+                        />
+                    </Form>
                 </div>
             </td>
         </tr>
